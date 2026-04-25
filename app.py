@@ -424,7 +424,7 @@ def compute_matching_score(cv_store: Chroma, poste_store: Chroma, llm) -> dict:
 
     # Step 1 : Extraire les compétences de la fiche de poste
     poste_retriever = poste_store.as_retriever(search_kwargs={"k": 6})
-    poste_docs = poste_retriever.get_relevant_documents("compétences requises profil recherché")
+    poste_docs = poste_retriever.invoke("compétences requises profil recherché")
     poste_text = "\n".join([d.page_content for d in poste_docs])
 
     extraction_prompt = f"""
@@ -462,7 +462,7 @@ JSON :"""
 
     resultats_tech = []
     for comp in exigences.get("competences_techniques", []):
-        docs = cv_retriever.get_relevant_documents(comp)
+        docs = cv_retriever.invoke(comp)
         cv_excerpt = "\n".join([d.page_content for d in docs])
 
         check_prompt = f"""
@@ -488,7 +488,7 @@ Réponds UNIQUEMENT avec ce JSON :
 
     resultats_soft = []
     for soft in exigences.get("competences_soft", []):
-        docs = cv_retriever.get_relevant_documents(soft)
+        docs = cv_retriever.invoke(soft)
         cv_excerpt = "\n".join([d.page_content for d in docs])
 
         check_prompt = f"""
